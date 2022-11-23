@@ -6,11 +6,9 @@ im_name='3_12_s.bmp';
 
 % TODO: Update library path
 % Add  library paths
-basedir='~/Desenvolupament/UGM/';
-addpath(basedir);
+%basedir='~/Desenvolupament/UGM/';
+%addpath(basedir);
 
-
-    
 %Set model parameters
 %cluster color
 K=4; % Number of color clusters (=number of states of hidden variables)
@@ -24,32 +22,37 @@ im = imread(im_name);
 
 NumFils = size(im,1);
 NumCols = size(im,2);
+NumChannels = size(im,3);
+NumPixels = NumFils*NumCols;
 
+%%
 %Convert to LAB colors space
 % TODO: Uncomment if you want to work in the LAB space
 %
 % im = RGB2Lab(im);
 
 
-
+%%
 %Preparing data for GMM fiting
 %
 % TODO: define the unary energy term: data_term
 % nodePot = P( color at pixel 'x' | Cluster color 'c' )  
-
-
+im = double(im);
+x = reshape(im, [NumPixels, NumChannels]);
+gmm_color = gmdistribution.fit(x, K);
+mu_color = gmm_color.mu;
+data_term=gmm_color.posterior(x);
 nodePot=[];
 
-
-
+%%
 %Building 4-grid
 %Build UGM Model for 4-connected segmentation
 disp('create UGM model');
 
 % Create UGM data
-[edgePot,edgeStruct] = CreateGridUGMModel(NumFils, NumCols, K ,smooth_term);
+[edgePot, edgeStruct] = CreateGridUGMModel(NumFils, NumCols, K, smooth_term);
 
-
+%%
 if ~isempty(edgePot)
 
     % color clustering
@@ -73,6 +76,7 @@ if ~isempty(edgePot)
     % - Graph Cut
     % - Linear Programing Relaxation
     
+    %
     figure
     subplot(2,2,1),imshow(Lab2RGB(im));xlabel('Original');
     subplot(2,2,2),imshow(Lab2RGB(im_c),[]);xlabel('Clustering without GM');
