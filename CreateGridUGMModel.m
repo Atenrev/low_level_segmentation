@@ -37,6 +37,8 @@ for e = 1:edgeStruct.nEdges
 
    %pot_same = exp(1.8 + .3*1/(1+abs(Xstd(n1)-Xstd(n2))));
    zero_diag = ones(K,K)-eye(K); % 
-   pots = exp(-zero_diag*lambda); 
+   %pots = exp(-zero_diag*lambda); % Potencial de parelles exponencial
+   %pots = exp(-zero_diag * (rand(K, K)*lambda));
+   pots = zero_diag * rand(K, K)*lambda;
    edgePot(:,:,e) = pots; % Inicialitzem edges amb Pots 
 end

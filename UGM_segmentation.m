@@ -79,10 +79,12 @@ if ~isempty(edgePot)
     % - Linear Programing Relaxation
     %
     figure
+    
     subplot(2,2,1),imshow(Lab2RGB(im));xlabel('Original');
     subplot(2,2,2),imshow(Lab2RGB(im_c),[]);xlabel('Clustering without GM');
     subplot(2,2,3),imshow(Lab2RGB(im_bp),[]);xlabel('Max-Sum');
     subplot(2,2,4),imshow(Lab2RGB(im_lbp),[]);xlabel('Loopy Belief Propagation');
+    saveas(figure, 'out.png')
     
 else
    
