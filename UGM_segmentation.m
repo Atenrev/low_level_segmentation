@@ -62,6 +62,7 @@ if ~isempty(edgePot)
     
     % Call different UGM inference algorithms
     display('Loopy Belief Propagation'); tic;
+    % [nodeBelLBP,edgeBelLBP,logZLBP] = UGM_Infer_Chain(nodePot,edgePot,edgeStruct);toc; % métode alternatiu
     [nodeBelLBP,edgeBelLBP,logZLBP] = UGM_Infer_LBP(nodePot,edgePot,edgeStruct);toc;
     [~,im_lbp] = max(nodeBelLBP,[],2);
     im_lbp= reshape(mu_color(im_lbp,:),size(im));
