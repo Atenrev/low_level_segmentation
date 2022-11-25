@@ -2,21 +2,22 @@ clear all;
 close all;
 clc;
 
-im_name='3_12_s.bmp';
+im_name='7_9_s.bmp';
 
 % TODO: Update library path
 % Add  library paths
-%basedir='~/Desenvolupament/UGM/';
+%basedir='UGM';
 %addpath(basedir);
+addpath(genpath("UGM"))
 
-%Set model parameters
+%% Set model parameters
 %cluster color
 K=4; % Number of color clusters (=number of states of hidden variables)
 
 %Pair-wise parameters
-smooth_term=[0.0 2]; % Potts Model
+smooth_term=2; % Potts Model
 
-%Load images
+%% Load images
 im = imread(im_name);
 
 
@@ -29,7 +30,7 @@ NumPixels = NumFils*NumCols;
 %Convert to LAB colors space
 % TODO: Uncomment if you want to work in the LAB space
 %
-% im = RGB2Lab(im);
+im = RGB2Lab(im);
 
 
 %%
@@ -42,7 +43,7 @@ x = reshape(im, [NumPixels, NumChannels]);
 gmm_color = gmdistribution.fit(x, K);
 mu_color = gmm_color.mu;
 data_term=gmm_color.posterior(x);
-nodePot=[];
+nodePot=data_term;
 
 %%
 %Building 4-grid
@@ -62,7 +63,8 @@ if ~isempty(edgePot)
     % Call different UGM inference algorithms
     display('Loopy Belief Propagation'); tic;
     [nodeBelLBP,edgeBelLBP,logZLBP] = UGM_Infer_LBP(nodePot,edgePot,edgeStruct);toc;
-    im_lbp = max(nodeBelLBP,[],2);
+    [~,im_lbp] = max(nodeBelLBP,[],2);
+    im_lbp= reshape(mu_color(im_lbp,:),size(im));
     
     % Max-sum
     display('Max-sum'); tic;
@@ -75,7 +77,6 @@ if ~isempty(edgePot)
     %
     % - Graph Cut
     % - Linear Programing Relaxation
-    
     %
     figure
     subplot(2,2,1),imshow(Lab2RGB(im));xlabel('Original');
